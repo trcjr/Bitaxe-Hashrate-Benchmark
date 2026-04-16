@@ -122,6 +122,7 @@ export function ResultsTable({
               <th className="pb-2 pr-4">Temp</th>
               <th className="pb-2 pr-4">Power</th>
               <th className="pb-2 pr-4">Efficiency</th>
+              <th className="pb-2 pr-4">Error %</th>
               <th className="pb-2">Status</th>
             </tr>
           </thead>
@@ -184,6 +185,11 @@ export function ResultsTable({
                       {result.efficiency_jth.toFixed(2)}
                     </span>
                     <span className="text-gray-400 ml-1">J/TH</span>
+                  </td>
+                  <td className="py-2 pr-4 font-mono text-white">
+                    {typeof result.error_percent === 'number' && !isNaN(result.error_percent)
+                      ? result.error_percent.toFixed(2)
+                      : '--'}
                   </td>
                   <td className="py-2">
                     {result.error_reason ? (

@@ -282,6 +282,28 @@ class BenchmarkRunner:
                     efficiency_jth=float("inf"),
                     hashrate_within_tolerance=False,
                     error_reason="SYSTEM_INFO_FAILURE",
+                    error_percent=None,
+                )
+
+            # --- Error Percentage Check ---
+            error_percentage = info.get("errorPercentage", 100.0)  # Default to 100% if not provided
+            max_error = getattr(self.config.analysis, "max_error_percent", 1.0)
+            if error_percentage is not None and error_percentage > max_error:
+                self._log(
+                    "error",
+                    f"Error percentage {error_percentage:.2f}% exceeds threshold ({max_error:.2f}%)"
+                )
+                return IterationResult(
+                    core_voltage=voltage,
+                    frequency=frequency,
+                    average_hashrate=0,
+                    hashrate_stddev=0,
+                    average_temperature=info.get("temp", 0),
+                    average_power=info.get("power", 0),
+                    efficiency_jth=float("inf"),
+                    hashrate_within_tolerance=False,
+                    error_reason="ERROR_PERCENTAGE_EXCEEDED",
+                    error_percent=error_percentage,
                 )
 
             temp = info.get("temp")
@@ -303,6 +325,7 @@ class BenchmarkRunner:
                     efficiency_jth=float("inf"),
                     hashrate_within_tolerance=False,
                     error_reason="TEMPERATURE_DATA_FAILURE" if temp is None else "TEMPERATURE_BELOW_5",
+                    error_percent=error_percentage,
                 )
 
             if temp >= self.config.safety.max_temp:
@@ -316,6 +339,7 @@ class BenchmarkRunner:
                     efficiency_jth=float("inf"),
                     hashrate_within_tolerance=False,
                     error_reason="CHIP_TEMP_EXCEEDED",
+                    error_percent=error_percentage,
                 )
 
             if vr_temp is not None and vr_temp >= self.config.safety.max_vr_temp:
@@ -330,6 +354,7 @@ class BenchmarkRunner:
                     efficiency_jth=float("inf"),
                     hashrate_within_tolerance=False,
                     error_reason="VR_TEMP_EXCEEDED",
+                    error_percent=error_percentage,
                 )
 
             if input_voltage < self.config.safety.min_input_voltage:
@@ -343,6 +368,7 @@ class BenchmarkRunner:
                     efficiency_jth=float("inf"),
                     hashrate_within_tolerance=False,
                     error_reason="INPUT_VOLTAGE_BELOW_MIN",
+                    error_percent=error_percentage,
                 )
 
             if input_voltage > self.config.safety.max_input_voltage:
@@ -356,6 +382,7 @@ class BenchmarkRunner:
                     efficiency_jth=float("inf"),
                     hashrate_within_tolerance=False,
                     error_reason="INPUT_VOLTAGE_ABOVE_MAX",
+                    error_percent=error_percentage,
                 )
 
             if hash_rate is None or power is None:
@@ -369,6 +396,7 @@ class BenchmarkRunner:
                     efficiency_jth=float("inf"),
                     hashrate_within_tolerance=False,
                     error_reason="HASHRATE_POWER_DATA_FAILURE",
+                    error_percent=error_percentage,
                 )
 
             if power > self.config.safety.max_power:
@@ -382,6 +410,7 @@ class BenchmarkRunner:
                     efficiency_jth=float("inf"),
                     hashrate_within_tolerance=False,
                     error_reason="POWER_CONSUMPTION_EXCEEDED",
+                    error_percent=error_percentage,
                 )
 
             # Record sample
@@ -413,6 +442,7 @@ class BenchmarkRunner:
                             fan_speed=fan_speed,
                         ),
                         running_stddev=self._running_stddev(sample_num + 1, s1, s2),
+                        error_percent=error_percentage,
                     )
                 )
 
@@ -432,6 +462,7 @@ class BenchmarkRunner:
                 efficiency_jth=float("inf"),
                 hashrate_within_tolerance=False,
                 error_reason="NO_DATA_COLLECTED",
+                error_percent=error_percentage,
             )
 
         # Trim outliers
@@ -469,6 +500,7 @@ class BenchmarkRunner:
                 efficiency_jth=float("inf"),
                 hashrate_within_tolerance=False,
                 error_reason="ZERO_HASHRATE",
+                error_percent=error_percentage,
             )
 
         hashrate_within_tolerance = average_hashrate >= expected_hashrate * self.config.analysis.hashrate_tolerance
@@ -485,6 +517,7 @@ class BenchmarkRunner:
             efficiency_jth=efficiency_jth,
             hashrate_within_tolerance=hashrate_within_tolerance,
             error_reason=None,
+            error_percent=error_percentage,
         )
 
     async def _check_pause(self) -> bool:

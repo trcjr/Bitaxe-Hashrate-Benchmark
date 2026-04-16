@@ -43,6 +43,7 @@ class AnalysisConfig(BaseModel):
     trim_outliers: int = Field(default=3, description="Number of outliers to trim from each end")
     warmup_samples: int = Field(default=6, description="Number of warmup samples to exclude from temp averaging")
     min_samples: int = Field(default=7, description="Minimum samples required for valid benchmark")
+    max_error_percent: float = Field(default=1.0, description="Maximum acceptable error percentage before marking iteration as bad")
 
 
 class BenchmarkConfig(BaseModel):

@@ -60,6 +60,7 @@ class SampleProgress(BaseModel):
     frequency: int = Field(description="Current frequency in MHz")
     sample: SampleData = Field(description="Sample measurement data")
     running_stddev: float = Field(description="Running standard deviation of hashrate")
+    error_percent: float = Field(default=None, description="Current error percentage reported by device (if available)")
     timestamp: datetime = Field(default_factory=datetime.now)
 
 
@@ -77,6 +78,7 @@ class IterationResult(BaseModel):
     efficiency_jth: float = Field(description="Efficiency in J/TH")
     hashrate_within_tolerance: bool = Field(description="Whether hashrate met expected threshold")
     error_reason: Optional[str] = Field(default=None, description="Error if iteration failed")
+    error_percent: Optional[float] = Field(default=None, description="Error percentage reported by device (if available)")
 
 
 class IterationComplete(BaseModel):

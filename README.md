@@ -109,8 +109,9 @@ docker run --rm bitaxe-benchmark 192.168.2.26 --set-values -v 1150 -f 780
 
 ## **Configuration**
 
-The script includes several configurable parameters. These can be adjusted in the bitaxe_hashrate_benchmark.py file:
+The script includes several configurable parameters. These can be adjusted in the UI or in the bitaxe_hashrate_benchmark.py file:
 
+* Max Acceptable Error Percentage: 1%.
 * Maximum chip temperature: 66°C  
 * Maximum VR temperature: 86°C  
 * Maximum allowed voltage: 1400mV  
@@ -136,15 +137,16 @@ The benchmark results are saved to `bitaxe_benchmark_results_<ip_address>_<times
 * Top 5 performing configurations ranked by hashrate  
 * Top 5 most efficient configurations ranked by J/TH  
 * For each configuration:  
-  * Average hashrate (with outlier removal)  
-  * Temperature readings (excluding initial warmup period)  
-  * VR temperature readings (when available)  
-  * Power efficiency metrics (J/TH)  
-  * Average Power (Watts)
-  * Average Fan Speed (Percentage or RPM, if available from API) 
-  * Input voltage measurements  
-  * Voltage/frequency combinations tested  
-  * Error reason (if any) for a specific iteration
+   * Average hashrate (with outlier removal)  
+   * Temperature readings (excluding initial warmup period)  
+   * VR temperature readings (when available)  
+   * Power efficiency metrics (J/TH)  
+   * Average Power (Watts)
+   * Average Fan Speed (Percentage or RPM, if available from API) 
+   * Input voltage measurements  
+   * Voltage/frequency combinations tested  
+   * Error percentage (live and per test)
+   * Error reason (if any) for a specific iteration
 
 ## **Safety Features**
 
@@ -167,6 +169,7 @@ The tool follows this process:
 1. Starts with user-specified or default voltage/frequency  
 2. Tests each combination for 10 minutes  
 3. Validates hashrate is within 6% of theoretical maximum  
+4. Monitors error percentage live and flags tests as failed if error % exceeds the configured threshold  
 4. Incrementally adjusts settings:  
    * Increases frequency if stable  
    * Increases voltage if unstable  
@@ -183,6 +186,7 @@ The tool implements several data processing techniques to ensure accurate result
 * Removes 3 highest and 3 lowest hashrate readings to eliminate outliers  
 * Excludes first 6 temperature readings during warmup period  
 * Validates hashrate is within 6% of theoretical maximum  
+* Monitors error percentage live and flags tests as failed if error % exceeds the configured threshold  
 * Averages power consumption across entire test period  
 * Monitors VR temperature when available  
 * Calculates efficiency in Joules per Terahash (J/TH)  

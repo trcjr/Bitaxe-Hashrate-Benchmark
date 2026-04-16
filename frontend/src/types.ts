@@ -45,6 +45,7 @@ export interface SampleProgress {
   frequency: number;
   sample: SampleData;
   running_stddev: number;
+  error_percent?: number | null;
   timestamp: string;
 }
 
@@ -60,6 +61,7 @@ export interface IterationResult {
   efficiency_jth: number;
   hashrate_within_tolerance: boolean;
   error_reason: string | null;
+  error_percent?: number | null;
 }
 
 export interface IterationComplete {
@@ -145,6 +147,7 @@ export interface AnalysisConfig {
   trim_outliers: number;
   warmup_samples: number;
   min_samples: number;
+  max_error_percent?: number; // Maximum acceptable error percentage (default 1%)
 }
 
 export interface BenchmarkConfig {

@@ -19,6 +19,11 @@ export function ProgressDisplay({ progress, voltageStep }: ProgressDisplayProps)
 
   const { sample, core_voltage, frequency, sample_number, total_samples, progress_percent, running_stddev } = progress;
 
+  // Try to get error percent from sample if present (for live display)
+  // If not present, display "--"
+  // If you have a better source for live error %, replace here
+  const errorPercent = (progress as any).error_percent;
+
   return (
     <div className="bg-gray-800 rounded-lg p-4">
       <h2 className="text-lg font-semibold text-white mb-4">Live Progress</h2>
@@ -119,6 +124,13 @@ export function ProgressDisplay({ progress, voltageStep }: ProgressDisplayProps)
             color="text-gray-300"
           />
         )}
+        {/* Error % in lower right */}
+        <MetricCard
+          label="Error %"
+          value={typeof errorPercent === 'number' && !isNaN(errorPercent) ? errorPercent.toFixed(2) : '--'}
+          unit="%"
+          color="text-pink-400"
+        />
       </div>
     </div>
   );

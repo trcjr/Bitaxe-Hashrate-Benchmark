@@ -265,6 +265,30 @@ export function ConfigEditor({ config, onSave, disabled }: ConfigEditorProps) {
             </div>
           </div>
 
+          {/* Analysis */}
+          <div>
+            <h3 className="text-sm font-medium text-gray-300 mb-2">Analysis</h3>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs text-gray-400">Max Acceptable Error %</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  value={
+                    editedConfig.analysis.max_error_percent === undefined
+                      ? 1.0
+                      : editedConfig.analysis.max_error_percent
+                  }
+                  onChange={e => handleChange('analysis', 'max_error_percent', e.target.value)}
+                  disabled={disabled}
+                  className="mt-1 w-full bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm disabled:opacity-50"
+                />
+                <span className="text-xs text-gray-500">Default: 1%</span>
+              </div>
+            </div>
+          </div>
+
           {error && (
             <div className="text-red-400 text-sm">{error}</div>
           )}
